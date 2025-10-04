@@ -24,8 +24,18 @@ def Http_trigger_v2(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     try:
+        # Step 1: Read item from Cosmos DB
         item= container.read_item(item="1", partition_key="1")
-        count= item.get("count")
+
+        # Step 2: Increment the count, if 'count' does not exist. Give it a default value of 0
+        count = item.get('count', 0) + 1
+
+        # Step 3: Update the item in Cosmos DB
+        item['count'] = count
+
+        # Step 4: Find document with (item["id"] == "1") and replace it with (body=item(new version of document and save it back in container))
+        container.replace_item(item=item["id"], body=item)
+
 
         return func.HttpResponse(f"Document found: id={item['id']}, count={count}")
     except Exception as e:
