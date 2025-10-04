@@ -1,25 +1,32 @@
 import azure.functions as func
 import logging
+from azure.cosmos import CosmosClient
+import os
+
+
+enpoint = os.environ["COSMOS_DB_ENDPOINT"]
+key = os.environ["COSMOS_DB_KEY"]
+database_name = os.environ["COSMOS_DB_DATABASE_NAME"]
+container_name = os.environ["COSMOS_DB_CONTAINER_NAME"]
+
+cosmos_client = CosmosClient(enpoint, credential=key)
+database_name = cosmos_client.get_database_client(database_name)
+container = database_name.get_container_client(container_name)
+
+
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
-
 @app.route(route="Http_trigger_v2")
+
+
+
 def Http_trigger_v2(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+    try:
+        item= container.read_item(item="1", partition_key="1")
+        count= item.get("count")
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+        return func.HttpResponse(f"Document found: id={item['id']}, count={count}")
+    except Exception as e:
+        return func.HttpResponse(f"Error reading from Cosmos DB: {str(e)}", status_code=500)
