@@ -2,6 +2,7 @@ import azure.functions as func
 import logging
 from azure.cosmos import CosmosClient
 import os
+import json
 
 
 enpoint = os.environ["COSMOS_DB_ENDPOINT"]
@@ -35,8 +36,12 @@ def Http_trigger_v2(req: func.HttpRequest) -> func.HttpResponse:
 
         # Step 4: Find document with (item["id"] == "1") and replace it with (body=item(new version of document and save it back in container))
         container.replace_item(item=item["id"], body=item)
-
-
-        return func.HttpResponse(f"Document found: id={item['id']}, count={count}")
+        body = {"id": item["id"], "count": item['count']}
+        return func.HttpResponse(
+            json.dumps(body), 
+            status_code=200, 
+            mimetype="application/json"
+        )
+    
     except Exception as e:
         return func.HttpResponse(f"Error reading from Cosmos DB: {str(e)}", status_code=500)
