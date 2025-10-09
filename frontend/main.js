@@ -3,11 +3,11 @@ window.addEventListener('DOMContentLoaded', (event) =>{
 })
 
 const functionApi = 'http://localhost:7071/api/Http_trigger_v2';
-const functionApiAzure = "__FUNCTION_URL__"; // This will be replaced during GitHub Actions workflow
+const functionApiAzure = '__FUNCTION_URL__';
 
 const getVisitCount = () => {
     let count = 30;
-    fetch(functionApiAzure).then(response => {
+    fetch(functionApi).then(response => {
         return response.json()
     }).then(response =>{
         console.log("Website called function API.");
@@ -18,5 +18,3 @@ const getVisitCount = () => {
     });
     return count;
 }
-
-
