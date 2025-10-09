@@ -3,11 +3,11 @@ window.addEventListener('DOMContentLoaded', (event) =>{
 })
 
 const functionApi = 'http://localhost:7071/api/Http_trigger_v2';
-
+const functionApiAzure = '__FUNCTION_URL__';
 
 const getVisitCount = () => {
     let count = 30;
-    fetch(functionApi).then(response => {
+    fetch(functionApiAzure).then(response => {
         return response.json()
     }).then(response =>{
         console.log("Website called function API.");
@@ -18,3 +18,5 @@ const getVisitCount = () => {
     });
     return count;
 }
+
+

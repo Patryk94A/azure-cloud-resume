@@ -1,0 +1,34 @@
+name: Blob storage website CI
+
+on:
+    push:
+        branches: [ main ]
+        paths:
+          - 'frontend/**' 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/login@v2
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Replace function URL placeholder
+      run: |
+            sed -i 's|__FUNCTION_URL__|${{ secrets.FUNCTION_URL }}|g' frontend/main.js
+            
+    - name: Upload to blob storage
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+            az storage blob upload-batch --account-name azureresumestaticwebsite --auth-mode key -d '$web' -s frontend/
+    - name: Purge CDN endpoint
+      uses: azure/CLI@v1
+
+  # Azure logout
+    - name: logout
+      run: |
+            az logout
+      if: always()
