@@ -24,8 +24,7 @@ jobs:
       with:
         inlineScript: |
             az storage blob upload-batch --account-name azureresumestaticwebsite --auth-mode key -d '$web' -s frontend/ --overwrite
-    - name: Purge CDN endpoint
-      uses: azure/CLI@v1
+
 
   # Azure logout
     - name: logout
