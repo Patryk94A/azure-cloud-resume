@@ -17,7 +17,7 @@ jobs:
     
     - name: Replace function URL placeholder
       run: |
-            sed -i "s|__FUNCTION_URL__|${{ secrets.FUNCTION_URL }}|g" frontend/main.js
+            sed -i "s#__FUNCTION_URL__#${{ secrets.FUNCTION_URL }}#g" frontend/main.js
 
     - name: Upload to blob storage
       uses: azure/CLI@v1

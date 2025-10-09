@@ -3,7 +3,7 @@ window.addEventListener('DOMContentLoaded', (event) =>{
 })
 
 const functionApi = 'http://localhost:7071/api/Http_trigger_v2';
-const functionApiAzure = '__FUNCTION_URL__';
+const functionApiAzure = "__FUNCTION_URL__"; // This will be replaced during GitHub Actions workflow
 
 const getVisitCount = () => {
     let count = 30;
