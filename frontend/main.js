@@ -7,7 +7,7 @@ const functionApiAzure = '__FUNCTION_URL__';
 
 const getVisitCount = () => {
     let count = 30;
-    fetch(functionApi).then(response => {
+    fetch(functionApiAzure).then(response => {
         return response.json()
     }).then(response =>{
         console.log("Website called function API.");
