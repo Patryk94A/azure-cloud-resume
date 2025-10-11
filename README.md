@@ -1,38 +1,59 @@
-# azure-cloud-resume
-My own azure resume challenge, following ACG project video.
+# ☁️ Azure Cloud Resume Challenge
 
-# First steps
-- Frontend folder contains the website
-- main.js contains code for counter
-- index.html contains my resume in html format
+This is my personal take on the Cloud Resume Challenge, but my version is using Python, inspired by the ACG project and built entirely on Microsoft Azure. It’s a static website hosted on Azure Storage, with a visitor counter powered by Azure Functions and Cosmos DB.
 
-# After a lot of time finding solution for "ERROR: unhandled error in functions worker: '_SixMetaPathImporter' object has no attribute '_path'". 
-- Solution was to downgrade python to 3.11.9 
+🔗 [Patryk Nowak CV](https://azureresumestaticwebsite.z19.web.core.windows.net/)  
+📁 [Source Code](https://github.com/Patryk94A/azure-cloud-resume)
 
-# Connection with CosmosDB
-- Added and tested connection with CosmosDB. Firstly i wanted to do it using bindings, but was not getting it ready. So switched it to SDK and it works perfectly after some tests
-- Added functionality to retrive data (id and count from CosmosDB) and each time someone enters HTTP trigger it adds 1 to it and replace it in CosmosDB
+---
 
-# Troubleshooting showing the visitor count into index.html
-- After troubleshooting (Press F12 → Console + Network), there were no errors with neither CORS, JSON or any other runtime errors.
-So the issue was somewhere else.
+## 🧱 Architecture Overview
 
+[Azure Resume Architecture]![alt text](image-1.png)
+
+---
+
+## 📁 Project Structure
+
+- `frontend/` — Static website with HTML resume and JavaScript visitor counter  
+- `main.js` — Fetches visitor count from Azure Function  
+- `index.html` — Resume in HTML format  
+- `api/` — Python Azure Function that connects to Cosmos DB  
+- `.github/workflows/` — CI/CD pipelines for deploying frontend
+
+---
+
+## ⚙️ Backend Functionality
+
+- Azure Function triggered via HTTP  
+- Connects to Cosmos DB using Python SDK  
+- Retrieves visitor count and increments it  
+- Returns JSON response to frontend
+
+## 📚 References & Learning Resources
+Main Resource\
+https://github.com/madebygps/azure-resume/tree/main
+
+CosmosDB bindings to Azure Functions\
+https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-cosmosdb-v2?tabs=isolated-process%2Cextensionv4&pivots=programming-language-python
+
+
+Github CI/CD to deploy static website\
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-static-site-github-actions?tabs=openid
+
+### 🔧 Python Fix
+There were a lot of errors, but main was with Python version :D\
+Resolved error:  
+`ERROR: unhandled error in functions worker: '_SixMetaPathImporter' object has no attribute '_path'`  
+✅ Solution: Downgraded Python to `3.11.9`
+
+Another one i was struggling:\
+
+Initial response returned plain text:
 ```python
-- Code before was a plain text. 
-
 return func.HttpResponse(f"Document found: id={item['id']}, count={count}")
-
 so instead of python dict:
 {'id': '1', 'count': 42}
 
-
-Adjusted it to:
-return func.HttpResponse(
-    json.dumps(body), 
-    status_code=200, 
-    mimetype="application/json"
-)
-
-So it returns json.dumps(body) in json format:
+It had to return json.dumps(body) in json format:
 {"id": "1", "count": 42}
-```
