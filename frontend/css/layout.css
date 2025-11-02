@@ -425,6 +425,14 @@ ul#nav li.current a { color: #F06000; }
   0%   { width: 0px;  }
   100% { width: 50%;  }
 }
+@-webkit-keyframes ansible {
+  0%   { width: 0px;  }
+  100% { width: 50%;  }
+}
+@-webkit-keyframes terraform {
+  0%   { width: 0px;  }
+  100% { width: 50%;  }
+}
 
 /* ------------------------------------------------------------------ */
 /* e. Portfolio Section
